@@ -24,6 +24,7 @@
   "homepage": "https://github.com/ivanuria/fullstack-part-3#readme",
   "dependencies": {
     "express": "^4.19.2",
+    "mongoose": "^8.5.1",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
