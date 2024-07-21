@@ -4,6 +4,14 @@ app.use(express.json())
 
 const PORT = 3001
 
+const createNewID = (items) => {
+    let newID = String(Math.round(Math.random() * 9999))
+    if (items.find(item => String(item.id) === newID )) {
+        newID = createNewID(items) // Recursivity to avoid duplication. Slow BTW. I'd use a UUID based on datetime
+    }
+    return newID
+}
+
 let contacts = [
     { 
       "id": "1",
@@ -39,6 +47,40 @@ app.get("/info", (request, response) => {
 
 app.get("/api/persons", (request, response) => {
     response.json(contacts)
+})
+
+app.post("/api/persons", (request, response) => {
+    let newContact = request.body
+
+    if (!newContact.name && !newContact.number) {
+        return response.status(400).json({
+            code: "e0000",
+            error: "'name' and 'number' must be specified"
+        })
+    }
+    if (!newContact.name) {
+        return response.status(400).json({
+            code: "e0001",
+            error: "'name' must be specified"
+        })
+    }
+    if (!newContact.number) {
+        return response.status(400).json({
+            code: "e0002",
+            error: "'number' must be specified"
+        })
+    }
+    const repeatedContact = contacts.find(contact => contact.name.toLowerCase() === newContact.name.toLowerCase())
+    if (repeatedContact) {
+        return response.status(400).json({
+            code: "e0010",
+            error: "'name' must be unique"
+        })
+    }
+
+    newContact = {id: createNewID(contacts), ...newContact}
+    contacts = contacts.concat(newContact)
+    response.json(newContact)
 })
 
 app.get("/api/persons/:id", (request, response) => {
