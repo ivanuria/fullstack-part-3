@@ -27,8 +27,28 @@ let contacts = [
     }
 ]
 
-app.get("/api/contacts", function(request, response) {
-    return response.json(contacts)
+app.get("/info", (request, response) => {
+    const now = new Date()
+    return response.send(`
+        <h1>Phonebook Info</h1>
+        <p>Phonebook has info for ${contacts.length} people</p>
+        <p>${now.toDateString()}, ${now.toTimeString()}</p>
+        `
+    )
+})
+
+app.get("/api/persons", (request, response) => {
+    response.json(contacts)
+})
+
+app.get("/api/persons/:id", (request, response) => {
+    const id = request.params.id
+    const contact = contacts.find(contact => String(contact.id) === String(id))
+
+    if (!contact) {
+        return response.status(404).end()
+    }
+    response.json(contact)
 })
 
 app.listen(PORT, () => {
