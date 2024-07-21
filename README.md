@@ -1,5 +1,7 @@
 # Part 3
 
+[Open the online APP](https://4f6y7l-3001.csb.app/)
+
 This endpoint serve the phonebook app created in previous parts
 
 Exercises 3.1 to 3.8

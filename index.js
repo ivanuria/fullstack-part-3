@@ -12,7 +12,7 @@ morgan.token("payload", (request, response) => {
 app.use(express.json())
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :payload"))
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 const createNewID = (items) => {
     let newID = String(Math.round(Math.random() * 9999))
