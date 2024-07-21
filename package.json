@@ -1,0 +1,31 @@
+{
+  "name": "phonebook-backend",
+  "version": "0.0.1",
+  "description": "This is the PhoneBook Backend for the Part 3 of the course Fullstack Open",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivanuria/fullstack-part-3.git"
+  },
+  "keywords": [
+    "phonebook",
+    "backend"
+  ],
+  "author": "Iván Uría",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ivanuria/fullstack-part-3/issues"
+  },
+  "homepage": "https://github.com/ivanuria/fullstack-part-3#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
