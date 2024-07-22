@@ -18,14 +18,6 @@ app.use(morgan(":method :url :status :res[content-length] - :response-time ms :p
 
 const PORT = process.env.PORT || 3001
 
-const createNewID = (items) => {
-    let newID = String(Math.round(Math.random() * 9999))
-    if (items.find(item => String(item.id) === newID )) {
-        newID = createNewID(items) // Recursivity to avoid duplication. Slow BTW. I'd use a UUID based on datetime
-    }
-    return newID
-}
-
 app.get("/info", (request, response) => {
     const now = new Date()
     return response.send(`
