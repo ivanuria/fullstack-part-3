@@ -1,7 +1,10 @@
+require("dotenv").config()
 const express = require("express")
 const morgan = require("morgan")
 const app = express()
 app.use(express.static("dist"))
+//MODELS
+const Person = require("./models/people")
 
 morgan.token("payload", (request, response) => {
     if (request.method === "POST") {
@@ -23,29 +26,6 @@ const createNewID = (items) => {
     return newID
 }
 
-let contacts = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
 app.get("/info", (request, response) => {
     const now = new Date()
     return response.send(`
@@ -57,7 +37,9 @@ app.get("/info", (request, response) => {
 })
 
 app.get("/api/persons", (request, response) => {
-    response.json(contacts)
+    Person.find({}).then(people => {
+        response.json(people)
+    })    
 })
 
 app.post("/api/persons", (request, response) => {
@@ -81,27 +63,36 @@ app.post("/api/persons", (request, response) => {
             error: "'number' must be specified"
         })
     }
-    const repeatedContact = contacts.find(contact => contact.name.toLowerCase() === newContact.name.toLowerCase())
-    if (repeatedContact) {
-        return response.status(400).json({
-            code: "e0010",
-            error: "'name' must be unique"
-        })
-    }
+    /*Person.find({name: `/^${newContact.name}$/i`})
+        .then(repeatedContact => {
+            if (repeatedContact && repeatedContact.length === 0) {
+                console.log("Repeated Contact", repeatedContact)
+                return response.status(400).json({
+                    code: "e0010",
+                    error: "'name' must be unique"
+                })
+            }
 
-    newContact = {id: createNewID(contacts), ...newContact}
-    contacts = contacts.concat(newContact)
-    response.json(newContact)
+            const person = new Person(newContact)
+            person.save().then(savedPerson => {
+                return response.json(savedPerson)
+            })
+        })*/
+    const person = new Person(newContact)
+    person.save().then(savedPerson => {
+        return response.json(savedPerson)
+    })
 })
 
 app.get("/api/persons/:id", (request, response) => {
-    const id = request.params.id
-    const contact = contacts.find(contact => String(contact.id) === String(id))
-
-    if (!contact) {
-        return response.status(404).end()
-    }
-    response.json(contact)
+    Person
+        .findById(request.params.id)
+        .then(person => {
+            response.json(person)
+        })
+        .catch(error => {
+            return response.status(404).json({error: error.message})
+        })
 })
 
 app.delete("/api/persons/:id", (request, response) => {
