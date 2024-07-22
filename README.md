@@ -4,7 +4,7 @@
 
 This endpoint serve the phonebook app created in previous parts
 
-Exercises 3.1 to 3.21
+Exercises 3.1 to 3.22
 
 ## PERSON OBJECT
 
