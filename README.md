@@ -4,7 +4,7 @@
 
 This endpoint serve the phonebook app created in previous parts
 
-Exercises 3.1 to 3.14
+Exercises 3.1 to 3.16
 
 ## ENDPOINTS
 
@@ -40,5 +40,15 @@ Adds new contact to persons
 ### <a id="get-api-persons-id"></a>GET /api/persons/{id}
 Returns contact with specified id
 
+#### Errors
+
+**e0100**:
+Malformed ID
+
 ### <a id="delete-api-persons-id"></a>DELETE /api/persons/{id}
 Deletes contact with specified id
+
+#### Errors
+
+**e0100**:
+Malformed ID
