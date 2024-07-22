@@ -34,27 +34,8 @@ app.get("/api/persons", (request, response) => {
     })    
 })
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
     let newContact = request.body
-
-    if (!newContact.name && !newContact.number) {
-        return response.status(400).json({
-            code: "e0000",
-            error: "'name' and 'number' must be specified"
-        })
-    }
-    if (!newContact.name) {
-        return response.status(400).json({
-            code: "e0001",
-            error: "'name' must be specified"
-        })
-    }
-    if (!newContact.number) {
-        return response.status(400).json({
-            code: "e0002",
-            error: "'number' must be specified"
-        })
-    }
 
     Person.findOne({name: new RegExp(String.raw`^${newContact.name}$`, "i")})
         .then(repeatedContact => {
@@ -65,11 +46,13 @@ app.post("/api/persons", (request, response) => {
                     error: "'name' must be unique"
                 })
             }
-
             const person = new Person(newContact)
-            person.save().then(savedPerson => {
-                return response.json(savedPerson)
-            })
+            person
+                .save()
+                .then(savedPerson => {
+                    return response.json(savedPerson)
+                })
+                .catch(error => next(error))
         })
 })
 
@@ -94,15 +77,13 @@ app.delete("/api/persons/:id", (request, response, next) => {
 })
 
 app.put("/api/persons/:id", (request, response, next) => {
-    const body = request.body
-
-    const person = {
-        name: body.name,
-        number: body.number
-    }
+    const { name, number } = request.body
 
     Person
-        .findByIdAndUpdate(request.params.id, person, { new: true})
+        .findByIdAndUpdate(
+            request.params.id, 
+            { name, number }, 
+            { new: true, runValidators: true, context: "query" })
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
@@ -119,11 +100,54 @@ const errorHandler = (error, request, response, next) => {
     console.error(error)
 
     if (error.name === "CastError") {
-        response.status(400).send({ 
+        return response.status(400).send({ 
             code: "e0100",
             error: "Malformed ID"
         })
     }
+    if (error.name === "ValidationError") {
+        console.log("ERROR DATA Name", error.errors.name ? error.errors.name.kind : "")
+        console.log("ERROR DATA Number", error.errors.number ? error.errors.number.kind : "")
+        if (error.errors.name && error.errors.name.kind === "required" 
+            && error.errors.number && error.errors.number.kind === "required") {
+            return response.status(400).json({
+                code: "e0000",
+                error: "'Name' and 'Phone' must be specified"
+            })
+        }
+        if (error.errors.name && error.errors.name.kind === "required") {
+            return response.status(400).json({
+                code: "e0001",
+                error: "'Name' must be specified"
+            })
+        }
+        if (error.errors.name && error.errors.name.kind === "minlength") {
+            return response.status(400).json({
+                code: "e0003",
+                error: "'Name' must be at least 3 characters long"
+            })
+        }
+        if (error.errors.number && error.errors.number.kind === "required") {
+            return response.status(400).json({
+                code: "e0002",
+                error: "'Phone' must be specified"
+            })
+        }
+        if (error.errors.number && error.errors.number.kind === "minlength") {
+            return response.status(400).json({
+                code: "e0004",
+                error: "'Phone' must be at least 8 characters long"
+            })
+        }
+        if (error.errors.number && error.errors.number.kind === "user defined") {
+            return response.status(400).json({
+                code: "e0005",
+                error: "'Phone' must be of format XX-XXXXX... or XXX-XXXX..."
+            })
+        }
+    }
+
+    return next(error)
 }
 
 app.use(errorHandler)

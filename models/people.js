@@ -14,8 +14,21 @@ mongoose
     })
 
 const personSchema = mongoose.Schema({
-    name: String,
-    number: String
+    name: {
+        type: String,
+        minLength: 3,
+        required: true
+    },
+    number: {
+        type: String,
+        required: true,
+        minLength: 8,
+        validate: {
+            validator: (v) => {
+                return /^\d{2,3}\-\d{4,}$/.test(v)
+            }
+        }
+    }
 })
 
 personSchema.set("toJSON", {

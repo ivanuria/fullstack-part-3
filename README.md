@@ -4,7 +4,7 @@
 
 This endpoint serve the phonebook app created in previous parts
 
-Exercises 3.1 to 3.18
+Exercises 3.1 to 3.21
 
 ## PERSON OBJECT
 
@@ -33,40 +33,61 @@ Returns all persons
 ### <a id="post-api-persons"></a>POST /api/persons
 Adds new contact to persons
 
-#### Errors
+#### **Errors**
 
-**e0000**:
+- **e0000**:
 'name' and 'number' must be specified
 
-**e0001**:
+- **e0001**:
 'name' must be specified
 
-**e0002**:
+- **e0002**:
 'number' must be specified
 
-**e0010**:
+- **e0003**:
+'name' must be at least 3 characters long
+
+- **e0004**:
+'number' must be at least 8 characters long
+
+- **e0005**:
+'phone' must be of format XX-XXXXX... or XXX-XXXX...
+
+- **e0010**:
 'name' must be unique
 
 ### <a id="get-api-persons-id"></a>GET /api/persons/{id}
 Returns contact with specified id
 
-#### Errors
+#### **Errors**
 
-**e0100**:
+- **e0100**:
 Malformed ID
 
 ### <a id="delete-api-persons-id"></a>DELETE /api/persons/{id}
 Deletes contact with specified id
 
-#### Errors
+#### **Errors**
 
-**e0100**:
+- **e0100**:
 Malformed ID
 
 ### <a id="put-api-persons-id"></a>PUT /api/persons/{id}
 Updates contact with specified id and informed data
 
-#### Errors
+#### **Errors**
 
-**e0100**:
+- **e0000**:
+'name' and 'number' must be specified
+
+- **e0001**:
+'name' must be specified
+
+- **e0002**:
+'number' must be specified
+
+- **e0003**:
+'name' must be at least 3 characters long
+
+- **e0100**:
 Malformed ID
