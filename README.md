@@ -6,6 +6,15 @@ This endpoint serve the phonebook app created in previous parts
 
 Exercises 3.1 to 3.16
 
+## PERSON OBJECT
+
+**name**
+: *String*, Name of the contact
+
+**number**
+: *String*, Phone Number of the contact
+
+
 ## ENDPOINTS
 
 - [GET /info](#get-info)
@@ -13,6 +22,7 @@ Exercises 3.1 to 3.16
 - [POST /api/persons](#post-api-persons)
 - [GET /api/persons/{id}](#get-api-persons-id)
 - [DELETE /api/persons/{id}](#delete-api-persons-id)
+- [PUT /api/persons/{id}](#put-api-persons-id)
 
 ### <a id="get-info"></a>GET /info
 Returns information of the stored contacts
@@ -47,6 +57,14 @@ Malformed ID
 
 ### <a id="delete-api-persons-id"></a>DELETE /api/persons/{id}
 Deletes contact with specified id
+
+#### Errors
+
+**e0100**:
+Malformed ID
+
+### <a id="put-api-persons-id"></a>PUT /api/persons/{id}
+Updates contact with specified id and informed data
 
 #### Errors
 

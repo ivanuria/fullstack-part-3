@@ -55,9 +55,10 @@ app.post("/api/persons", (request, response) => {
             error: "'number' must be specified"
         })
     }
-    /*Person.find({name: `/^${newContact.name}$/i`})
+
+    Person.findOne({name: new RegExp(String.raw`^${newContact.name}$`, "i")})
         .then(repeatedContact => {
-            if (repeatedContact && repeatedContact.length === 0) {
+            if (repeatedContact) {
                 console.log("Repeated Contact", repeatedContact)
                 return response.status(400).json({
                     code: "e0010",
@@ -69,11 +70,7 @@ app.post("/api/persons", (request, response) => {
             person.save().then(savedPerson => {
                 return response.json(savedPerson)
             })
-        })*/
-    const person = new Person(newContact)
-    person.save().then(savedPerson => {
-        return response.json(savedPerson)
-    })
+        })
 })
 
 app.get("/api/persons/:id", (request, response) => {
@@ -92,6 +89,22 @@ app.delete("/api/persons/:id", (request, response, next) => {
         .findByIdAndDelete(request.params.id)
         .then(result => {
             response.status(204).end()
+        })
+        .catch(error => next(error))
+})
+
+app.put("/api/persons/:id", (request, response, next) => {
+    const body = request.body
+
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person
+        .findByIdAndUpdate(request.params.id, person, { new: true})
+        .then(updatedPerson => {
+            response.json(updatedPerson)
         })
         .catch(error => next(error))
 })
